@@ -14,8 +14,9 @@ deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted univer
 deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse \n\
 " >/etc/apt/sources.list
 
-RUN bash -c 'echo -e "Asia/Shanghai" > /etc/timezone'&& \
-    apt-get update
+RUN bash -c 'echo -e "Asia/Shanghai" > /etc/timezone' && \
+    apt-get update && \
+    apt-get install -y ca-certificates software-properties-common
 
 RUN apt-get install -y apt-utils \
     build-essential \
