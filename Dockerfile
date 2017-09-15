@@ -14,7 +14,12 @@ deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted univer
 deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse \n\
 " >/etc/apt/sources.list
 
-RUN apt-get update && apt-get install -y ca-certificates software-properties-common
+RUN bash -c 'echo -e "Asia/Shanghai" > /etc/timezone'&& \
+    apt-get update
+
+RUN apt-get install -y apt-utils \
+    build-essential \
+    zlib1g.dev
 
 # install python
 RUN apt-get install -y python-pip python2.7 python2.7-dev
@@ -25,10 +30,17 @@ RUN apt-get update
 RUN apt-get install -y pypy pypy-dev
 
 # ADD after.py
-RUN mkdir -p /tools/after
-COPY . /tools/after
-RUN chmod +x /tools/after/after.py
-WORKDIR /tools/after
+RUN mkdir -p /bioapp/after
+COPY . /bioapp/after/
+#RUN chmod +x /bioapp/after/after.py
+WORKDIR /bioapp/after
 RUN make
 
-ENTRYPOINT ["/usr/bin/pypy"]
+##configuration the env
+ENV PATH /bioapp/after:$PATH
+
+##clean
+RUN apt-get clean
+
+##switch the directory
+WORKDIR /var/data
